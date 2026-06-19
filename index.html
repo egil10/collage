@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Collage — drop images, drag borders, download</title>
+  <meta name="description" content="Make a print-ready collage in your browser. Drop in images, pick A3/A4/A5, drag the borders to resize, and download a high-resolution image. Everything runs locally — your photos never leave your device." />
+  <meta name="theme-color" content="#15161a" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%BC%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">🖼️</span> Collage</div>
+
+    <div class="top-controls">
+      <label class="field">
+        <span>Size</span>
+        <select id="sizeSelect" title="Paper size (controls export resolution)">
+          <option value="A3">A3</option>
+          <option value="A4" selected>A4</option>
+          <option value="A5">A5</option>
+        </select>
+      </label>
+
+      <button id="orientBtn" class="btn ghost" title="Toggle orientation">↕ Portrait</button>
+
+      <button id="addBtn" class="btn">＋ Add images</button>
+
+      <div class="download-group">
+        <button id="downloadBtn" class="btn primary" disabled>⬇ Download</button>
+        <select id="formatSelect" title="File format">
+          <option value="png">PNG</option>
+          <option value="jpg">JPG</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage" id="stage">
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="canvas"></canvas>
+        <div class="overlay" id="overlay"></div>
+        <div class="empty-hint" id="emptyHint">
+          <div class="eh-icon">⬇</div>
+          <div class="eh-title">Drop images here</div>
+          <div class="eh-sub">or click to browse · jpg, png, webp, gif…</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2 class="panel-title">Layout</h2>
+
+      <label class="field block">
+        <span>Columns</span>
+        <select id="colsSelect">
+          <option value="0" selected>Auto</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </label>
+
+      <label class="field block">
+        <span>Border thickness <em id="gapVal">3 mm</em></span>
+        <input id="gapRange" type="range" min="0" max="20" step="0.5" value="3" />
+      </label>
+
+      <label class="field block">
+        <span>Outer margin <em id="marginVal">5 mm</em></span>
+        <input id="marginRange" type="range" min="0" max="30" step="0.5" value="5" />
+      </label>
+
+      <label class="field block">
+        <span>Corner radius <em id="radiusVal">0 mm</em></span>
+        <input id="radiusRange" type="range" min="0" max="20" step="0.5" value="0" />
+      </label>
+
+      <h2 class="panel-title">Border colour</h2>
+      <div class="swatches" id="swatches">
+        <button class="swatch" data-color="#ffffff" style="background:#ffffff" title="White"></button>
+        <button class="swatch" data-color="#000000" style="background:#000000" title="Black"></button>
+        <button class="swatch" data-color="#f2f0eb" style="background:#f2f0eb" title="Paper"></button>
+        <button class="swatch" data-color="#1d1f26" style="background:#1d1f26" title="Charcoal"></button>
+        <label class="swatch custom" title="Custom colour">
+          <input id="bgColor" type="color" value="#ffffff" />
+        </label>
+      </div>
+
+      <h2 class="panel-title">Export</h2>
+      <label class="field block">
+        <span>Quality</span>
+        <select id="dpiSelect">
+          <option value="150">150 DPI (smaller)</option>
+          <option value="300" selected>300 DPI (print)</option>
+        </select>
+      </label>
+      <p class="dims" id="dimsText">—</p>
+
+      <p class="hint-text">
+        Tip: drag the lines between photos to resize · drag inside a photo to reposition · scroll to zoom · double-click to reset.
+      </p>
+    </aside>
+  </main>
+
+  <footer class="tray-section">
+    <div class="tray-bar">
+      <span id="count" class="count">0 photos</span>
+      <div class="tray-actions">
+        <button id="shuffleBtn" class="btn ghost small">⤮ Shuffle</button>
+        <button id="reverseBtn" class="btn ghost small">⇄ Reverse</button>
+        <button id="clearBtn" class="btn ghost small danger">🗑 Clear</button>
+      </div>
+    </div>
+    <div class="tray" id="tray"></div>
+  </footer>
+
+  <input type="file" id="fileInput" accept="image/*" multiple hidden />
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
